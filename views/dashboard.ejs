@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - Sistema de Reservas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .welcome-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .welcome-section h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-section p {
+            opacity: 0.9;
+            margin-bottom: 0;
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            height: 100%;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .stats-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .stats-icon.primary {
+            background: rgba(75,108,183,0.1);
+            color: var(--primary-color);
+        }
+
+        .stats-number {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            height: 100%;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .action-card .btn {
+            margin-top: auto;
+        }
+
+        .recent-activity {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+
+        .activity-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            background: rgba(75,108,183,0.1);
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="welcome-section">
+            <h1>Bem-vindo, <%= user.nome %>!</h1>
+            <p>Gerencie suas reservas de forma simples e eficiente.</p>
+        </div>
+
+        <div class="row g-4">
+            <% if (user.tipo === 'admin') { %>
+            <div class="col-md-6">
+                <div class="stats-card">
+                    <div class="stats-icon primary">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stats-number" id="totalReservas">0</div>
+                    <div class="stats-label">Total de Reservas</div>
+                </div>
+            </div>
+            <% } %>
+            
+            <% if (user.tipo === 'admin') { %>
+            <div class="col-md-6">
+                <div class="stats-card">
+                    <div class="stats-icon primary">
+                        <i class="fas fa-door-open"></i>
+                    </div>
+                    <div class="stats-number" id="totalSalas">0</div>
+                    <div class="stats-label">Total de Salas</div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+
+        <div class="row g-4 mt-4">
+            <div class="col-md-6">
+                <div class="action-card">
+                    <i class="fas fa-plus-circle action-icon"></i>
+                    <h5>Nova Reserva</h5>
+                    <p class="text-muted">Faça uma nova reserva de sala para seu evento ou reunião.</p>
+                    <a href="/nova-reserva" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Reservar Sala
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="action-card">
+                    <i class="fas fa-list action-icon"></i>
+                    <h5>Minhas Reservas</h5>
+                    <p class="text-muted">Visualize e gerencie todas as suas reservas ativas.</p>
+                    <a href="/minhas-reservas" class="btn btn-primary">
+                        <i class="fas fa-eye me-2"></i>Ver Reservas
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <% if (user.tipo === 'admin') { %>
+            <div class="row g-4 mt-4">
+                <div class="col-md-6">
+                    <div class="action-card">
+                        <i class="fas fa-door-open action-icon"></i>
+                        <h5>Gerenciar Salas</h5>
+                        <p class="text-muted">Adicione, edite ou remova salas do sistema.</p>
+                        <a href="/admin/salas" class="btn btn-primary">
+                            <i class="fas fa-cog me-2"></i>Gerenciar Salas
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="action-card">
+                        <i class="fas fa-tasks action-icon"></i>
+                        <h5>Gerenciar Reservas</h5>
+                        <p class="text-muted">Visualize e gerencie todas as reservas do sistema.</p>
+                        <a href="/admin/reservas" class="btn btn-primary">
+                            <i class="fas fa-cog me-2"></i>Gerenciar Reservas
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mt-4">
+                <div class="col-md-6">
+                    <div class="action-card">
+                        <i class="fas fa-comments action-icon"></i>
+                        <h5>Gerenciar Feedbacks</h5>
+                        <p class="text-muted">Visualize e gerencie os feedbacks de salas dos usuários.</p>
+                        <a href="/admin/feedbacks" class="btn btn-primary">
+                            <i class="fas fa-comment-dots me-2"></i>Ver Feedbacks
+                        </a>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Função para verificar autenticação
+        function verificarAutenticacao() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login';
+            }
+            return token;
+        }
+
+        // Função para fazer logout
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userType');
+            localStorage.removeItem('userName');
+            window.location.href = '/login';
+        }
+
+        // Função para carregar estatísticas
+        async function carregarEstatisticas() {
+            try {
+                const response = await fetch('/api/dashboard/stats', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                
+                if (response.ok) {
+                    console.log('Token de autorização:', localStorage.getItem('token'));
+                    const data = await response.json();
+                    console.log('Dados recebidos da API:', data);
+                    document.getElementById('totalReservas').textContent = data.totalReservas || 0;
+                    document.getElementById('totalSalas').textContent = data.totalSalas || 0;
+                    console.log('Total de Salas atualizado para:', document.getElementById('totalSalas').textContent);
+                } else {
+                    console.error('Erro na resposta da API:', response.status, response.statusText);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+
+        // Carregar estatísticas ao iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            verificarAutenticacao();
+            carregarEstatisticas();
+        });
+    </script>
+</body>
+</html> 
